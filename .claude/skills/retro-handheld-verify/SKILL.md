@@ -133,7 +133,7 @@ GitHub Actions runs on every push/PR:
 - **Platform variable reset:** `lib/platform.sh` uses `PLATFORM="${PLATFORM:-}"` guard to survive re-sourcing
 - **Literal brackets in strings:** `[ND]A33` requires `grep -F` (fixed-string), not regex
 - **No nanosecond timestamps on macOS:** `date +%s%N` unsupported — speed measurement uses dd's timing output
-- **SCRIPT_DIR collision:** `verify.sh` uses `VERIFY_DIR` to avoid collision with lib module `SCRIPT_DIR`
+- **Variable name collision:** Each module uses a unique dir var (`VERIFY_DIR`, `_STRINGS_DIR`, `_DTB_DIR`, `_DISK_DIR`, `_VERDICT_DIR`, `CONTRIBUTE_DIR`). Never use `SCRIPT_DIR`.
 - **Sector file vs disk image:** `detect_bootloader_from_file` checks file size to determine offset calculation
 
 ## Signature Database Schema
