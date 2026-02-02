@@ -1,0 +1,16 @@
+name: Validate Signatures
+on:
+  push:
+    paths: ['signatures/**']
+  pull_request:
+    paths: ['signatures/**']
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JSON
+        run: python3 -c "import json; json.load(open('signatures/devices.json'))"
+      - name: Check schema
+        run: bash tests/test_json.sh

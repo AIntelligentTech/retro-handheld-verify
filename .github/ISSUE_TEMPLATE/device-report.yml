@@ -1,0 +1,35 @@
+name: Device Report
+description: Submit data from a new retro handheld device
+title: "[Device] "
+labels: ["device-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing! Run `sudo ./contribute.sh /dev/YOUR_DEVICE` and paste the JSON output below.
+  - type: input
+    id: device-name
+    attributes:
+      label: Device Name
+      description: "e.g., R36S, RG35XX, GA36"
+      placeholder: "GA36"
+    validations:
+      required: true
+  - type: textarea
+    id: contribute-output
+    attributes:
+      label: contribute.sh output
+      description: Paste the full JSON output from contribute.sh
+      render: json
+    validations:
+      required: true
+  - type: input
+    id: purchase-source
+    attributes:
+      label: Where did you buy it?
+      placeholder: "AliExpress, Amazon, etc."
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Any other relevant information about the device

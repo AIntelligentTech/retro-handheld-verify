@@ -1,0 +1,28 @@
+name: Bug Report
+description: Report a bug in the verification tool
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      placeholder: "macOS 15.3 / Ubuntu 24.04"
+  - type: textarea
+    id: output
+    attributes:
+      label: Command Output
+      render: shell

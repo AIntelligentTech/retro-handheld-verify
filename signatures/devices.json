@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "devices": {
+    "ga36-allwinner-a33": {
+      "name": "GA36 Allwinner A33 Clone",
+      "type": "clone",
+      "soc_vendor": "allwinner",
+      "soc_model": "A33",
+      "signals": {
+        "sector16_magic": "65474f4e",
+        "sector16_offset": 4,
+        "sector64_magic": "ffffffffffffffff",
+        "boot_strings": ["[ND]A33 nand2.0", "AllWinner Technology"],
+        "uboot_version": "U-Boot (version not found in first 64MB)",
+        "partition_types": ["0c", "06", "85"]
+      },
+      "cfw_support": "none",
+      "verification": {
+        "method": "physical_hardware_test",
+        "verified_by": "tonydeverill",
+        "verified_date": "2026-02-02",
+        "test_description": "Stock 64GB SD card from GA36 clone, AliExpress"
+      }
+    }
+  },
+  "dtb_fingerprints": {},
+  "unverified_references": {
+    "_note": "From community repos, NOT verified. Reference only.",
+    "AeolusUX/R36S-DTB": "https://github.com/AeolusUX/R36S-DTB",
+    "dhaluza/Clone-R36S-": "https://github.com/dhaluza/Clone-R36S-"
+  }
+}
