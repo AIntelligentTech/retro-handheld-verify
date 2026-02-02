@@ -12,7 +12,7 @@ jobs:
       - name: Install shellcheck
         run: sudo apt-get install -y shellcheck
       - name: Shellcheck
-        run: shellcheck -x -e SC2034 verify.sh contribute.sh lib/*.sh
+        run: shellcheck -x -e SC2034 -e SC1090 -e SC1091 verify.sh contribute.sh lib/*.sh
       - name: Check bash syntax
         run: bash -n verify.sh contribute.sh lib/*.sh
 

@@ -61,19 +61,19 @@ detect_strings_from_file() {
             # Try to identify specific model
             if grep -q "H700\|sun50iw6" "${file}"; then
                 SOC_MODEL="H700"
-                matched_strings+=($(grep "H700\|sun50iw6" "${file}"))
+                while IFS= read -r line; do matched_strings+=("$line"); done < <(grep "H700\|sun50iw6" "${file}")
             elif grep -q "H616\|sun50iw9" "${file}"; then
                 SOC_MODEL="H616"
-                matched_strings+=($(grep "H616\|sun50iw9" "${file}"))
+                while IFS= read -r line; do matched_strings+=("$line"); done < <(grep "H616\|sun50iw9" "${file}")
             elif grep -q "H3\|sun8iw7" "${file}"; then
                 SOC_MODEL="H3"
-                matched_strings+=($(grep "H3\|sun8iw7" "${file}"))
+                while IFS= read -r line; do matched_strings+=("$line"); done < <(grep "H3\|sun8iw7" "${file}")
             else
                 SOC_MODEL="unknown_allwinner"
             fi
-            
+
             SOC_CONFIDENCE="unverified"
-            matched_strings+=($(grep "AllWinner\|sunxi" "${file}"))
+            while IFS= read -r line; do matched_strings+=("$line"); done < <(grep "AllWinner\|sunxi" "${file}")
         fi
     fi
 
@@ -81,7 +81,7 @@ detect_strings_from_file() {
     if [[ "${SOC_VENDOR}" != "allwinner" ]] && grep -q "rockchip\|rk3\|RK3" "${file}"; then
         SOC_VENDOR="rockchip"
         SOC_CONFIDENCE="unverified"
-        matched_strings+=($(grep "rockchip\|rk3\|RK3" "${file}"))
+        while IFS= read -r line; do matched_strings+=("$line"); done < <(grep "rockchip\|rk3\|RK3" "${file}")
         
         # Extract model number (RK3326, RK3566, RK3588, etc.)
         local model_match
@@ -97,7 +97,7 @@ detect_strings_from_file() {
     if [[ "${SOC_VENDOR}" != "allwinner" && "${SOC_VENDOR}" != "rockchip" ]] && grep -q "amlogic\|aml_\|meson" "${file}"; then
         SOC_VENDOR="amlogic"
         SOC_CONFIDENCE="unverified"
-        matched_strings+=($(grep "amlogic\|aml_\|meson" "${file}"))
+        while IFS= read -r line; do matched_strings+=("$line"); done < <(grep "amlogic\|aml_\|meson" "${file}")
         SOC_MODEL="unknown_amlogic"
     fi
 
