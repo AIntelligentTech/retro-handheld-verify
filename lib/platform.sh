@@ -112,7 +112,15 @@ plat_readbytes() {
         return 1
     fi
 
-    dd if="${device}" bs=1 skip="${skip_bytes}" count="${count}" 2>/dev/null
+    # Use block-aligned reads where possible for performance
+    # bs=1 is catastrophically slow for large reads
+    if (( count >= 4096 && skip_bytes % 4096 == 0 )); then
+        dd if="${device}" bs=4096 skip="$((skip_bytes / 4096))" count="$((count / 4096))" 2>/dev/null
+    elif (( count >= 512 && skip_bytes % 512 == 0 )); then
+        dd if="${device}" bs=512 skip="$((skip_bytes / 512))" count="$((count / 512))" 2>/dev/null
+    else
+        dd if="${device}" bs=1 skip="${skip_bytes}" count="${count}" 2>/dev/null
+    fi
     return $?
 }
 

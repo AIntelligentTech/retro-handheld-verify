@@ -5,8 +5,8 @@
 set -o pipefail
 
 # Source platform.sh (required for base functionality)
-SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
-source "${SCRIPT_DIR}/platform.sh" || {
+_VERDICT_DIR="$(dirname "${BASH_SOURCE[0]}")"
+source "${_VERDICT_DIR}/platform.sh" || {
     echo "ERROR: Failed to source platform.sh" >&2
     return 1
 }

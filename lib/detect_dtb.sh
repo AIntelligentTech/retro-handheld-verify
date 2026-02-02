@@ -4,8 +4,8 @@
 
 set -o pipefail
 
-SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
-source "${SCRIPT_DIR}/platform.sh"
+_DTB_DIR="$(dirname "${BASH_SOURCE[0]}")"
+source "${_DTB_DIR}/platform.sh"
 
 # Global variables set by detection functions
 DTB_FILES=""
@@ -75,32 +75,32 @@ _search_dtb_magic() {
   local dtb_found=()
   local count=0
   local boot_size=$((10 * 1024 * 1024))  # Search first 10MB
-  local search_step=$((1024 * 1024))     # Search every 1MB
-  local magic_hex="d00dfeed"
-  local offset=0
+  local magic_bytes=$'\xd0\x0d\xfe\xed'
 
-  # Read boot area and search for DTB magic bytes
-  local boot_data
-  boot_data=$(plat_readbytes "${device}" 0 "${boot_size}" 2>/dev/null | xxd -p)
+  # Use grep -b to find magic byte offsets directly (much faster than bash loop)
+  local boot_data_file
+  boot_data_file=$(mktemp) || {
+    DTB_FILES=""
+    DTB_COUNT=0
+    return 1
+  }
 
-  if [[ -z "${boot_data}" ]]; then
+  dd if="${device}" bs=4096 count=$((boot_size / 4096)) 2>/dev/null > "${boot_data_file}"
+
+  if [[ ! -s "${boot_data_file}" ]]; then
+    rm -f "${boot_data_file}"
     DTB_FILES=""
     DTB_COUNT=0
     return 1
   fi
 
-  # Search for DTB magic in hex string
-  local search_pos=0
-  while [[ ${search_pos} -lt ${#boot_data} ]]; do
-    local hex_chunk="${boot_data:${search_pos}:8}"
-    if [[ "${hex_chunk}" == "${magic_hex}" ]]; then
-      # Found DTB magic at this position
-      local byte_offset=$((search_pos / 2))
-      dtb_found+=("raw@${byte_offset}:magic_found")
-      ((count++))
-    fi
-    ((search_pos += 2))  # Move 1 byte (2 hex chars)
-  done
+  # Search for DTB magic using grep on binary data
+  while IFS=: read -r byte_offset _; do
+    dtb_found+=("raw@${byte_offset}:magic_found")
+    ((count++))
+  done < <(grep -boa $'\xd0\x0d\xfe\xed' "${boot_data_file}" 2>/dev/null)
+
+  rm -f "${boot_data_file}"
 
   # Set global variables
   DTB_FILES="${dtb_found[*]}"

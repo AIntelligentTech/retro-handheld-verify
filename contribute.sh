@@ -11,8 +11,8 @@
 set -o pipefail
 
 # Script directory for sourcing lib modules
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/lib"
+CONTRIBUTE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="${CONTRIBUTE_DIR}/lib"
 
 # Global variables
 DEVICE=""
@@ -50,7 +50,7 @@ USAGE
 # Function to convert macOS disk device to raw device
 macos_to_raw_device() {
     local device="$1"
-    if [[ "$device" =~ ^/dev/disk ]]; then
+    if [[ "$device" =~ ^/dev/disk[0-9] ]]; then
         # Convert /dev/diskN to /dev/rdiskN
         device="${device/disk/rdisk}"
     fi

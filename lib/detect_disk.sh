@@ -4,8 +4,8 @@
 
 set -o pipefail
 
-SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
-source "${SCRIPT_DIR}/platform.sh"
+_DISK_DIR="$(dirname "${BASH_SOURCE[0]}")"
+source "${_DISK_DIR}/platform.sh"
 
 # Global variables set by detection functions
 DISK_SIZE_BYTES=0
@@ -31,14 +31,15 @@ detect_disk() {
   fi
 
   # Get disk size in bytes
-  DISK_SIZE_BYTES=$(plat_diskinfo "${device}" 2>/dev/null)
-  if [[ $? -ne 0 || -z "${DISK_SIZE_BYTES}" ]]; then
+  local size_result
+  if ! size_result=$(plat_diskinfo "${device}" 2>/dev/null) || [[ -z "${size_result}" ]]; then
     DISK_SIZE_BYTES=0
     DISK_SIZE_HUMAN=""
     DISK_READ_SPEED=0
     DISK_MODEL="unknown"
     return 1
   fi
+  DISK_SIZE_BYTES="${size_result}"
 
   # Convert size to human readable format
   _format_disk_size "${DISK_SIZE_BYTES}"
@@ -47,9 +48,11 @@ detect_disk() {
   _get_disk_model "${device}"
 
   # Measure read speed
-  DISK_READ_SPEED=$(plat_readspeed "${device}" 2>/dev/null)
-  if [[ $? -ne 0 || -z "${DISK_READ_SPEED}" ]]; then
+  local speed_result
+  if ! speed_result=$(plat_readspeed "${device}" 2>/dev/null) || [[ -z "${speed_result}" ]]; then
     DISK_READ_SPEED=0
+  else
+    DISK_READ_SPEED="${speed_result}"
   fi
 
   return 0

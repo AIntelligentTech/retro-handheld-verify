@@ -5,8 +5,8 @@
 set -o pipefail
 
 # Source platform.sh
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${SCRIPT_DIR}/platform.sh" || {
+_STRINGS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${_STRINGS_DIR}/platform.sh" || {
     echo "ERROR: Failed to source platform.sh" >&2
     return 1
 }
@@ -111,11 +111,11 @@ detect_strings_from_file() {
 
     # Collect all matched strings, removing duplicates while preserving order
     local unique_strings=()
-    local seen=()
+    local -A seen_map=()
     for str in "${matched_strings[@]}"; do
-        if [[ ! " ${seen[*]} " == *" ${str} "* ]]; then
+        if [[ -z "${seen_map["${str}"]+x}" ]]; then
             unique_strings+=("${str}")
-            seen+=("${str}")
+            seen_map["${str}"]=1
         fi
     done
 
@@ -160,17 +160,13 @@ detect_strings() {
     }
 
     echo "${strings_output}" > "${temp_file}"
-    local result
 
-    # Analyze the extracted strings
+    # Analyze the extracted strings, clean up temp file on exit
     detect_strings_from_file "${temp_file}"
-    result=$?
+    local result=$?
 
     rm -f "${temp_file}"
     return ${result}
 }
 
-# Export functions for use as a library
-export -f detect_strings_from_file
-export -f detect_strings
 

@@ -141,39 +141,52 @@ output_human() {
     printf '%s\n' "═══════════════════════════════════════════════════════"
 }
 
+# json_str - Escape a string for safe JSON embedding
+# Handles backslashes, quotes, newlines, tabs, carriage returns
+json_str() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+}
+
 # Function to output JSON results
 output_json() {
-    # Use printf to build JSON (no jq dependency)
-    printf '{'
-    printf '"verdict":"%s",' "${VERDICT}"
-    printf '"confidence":"%s",' "${VERDICT_CONFIDENCE}"
-    printf '"notes":"%s",' "${VERDICT_NOTES}"
+    local size_gb
+    size_gb=$(echo "scale=1; ${DISK_SIZE_BYTES} / 1073741824" | bc 2>/dev/null || echo "0")
+
+    printf '{"verdict":"%s",' "$(json_str "${VERDICT}")"
+    printf '"confidence":"%s",' "$(json_str "${VERDICT_CONFIDENCE}")"
+    printf '"notes":"%s",' "$(json_str "${VERDICT_NOTES}")"
     printf '"bootloader":{'
-    printf '"type":"%s",' "${BOOTLOADER_TYPE}"
-    printf '"magic":"%s",' "${BOOTLOADER_MAGIC}"
-    printf '"confidence":"%s"' "${BOOTLOADER_CONFIDENCE}"
+    printf '"type":"%s",' "$(json_str "${BOOTLOADER_TYPE}")"
+    printf '"magic":"%s",' "$(json_str "${BOOTLOADER_MAGIC}")"
+    printf '"confidence":"%s"' "$(json_str "${BOOTLOADER_CONFIDENCE}")"
     printf '},'
     printf '"soc":{'
-    printf '"vendor":"%s",' "${SOC_VENDOR}"
-    printf '"model":"%s",' "${SOC_MODEL}"
-    printf '"confidence":"%s",' "${SOC_CONFIDENCE}"
-    printf '"uboot_version":"%s"' "${UBOOT_VERSION}"
+    printf '"vendor":"%s",' "$(json_str "${SOC_VENDOR}")"
+    printf '"model":"%s",' "$(json_str "${SOC_MODEL}")"
+    printf '"confidence":"%s",' "$(json_str "${SOC_CONFIDENCE}")"
+    printf '"uboot_version":"%s"' "$(json_str "${UBOOT_VERSION}")"
     printf '},'
     printf '"dtb":{'
     printf '"count":%d,' "${DTB_COUNT}"
-    printf '"files":"%s"' "${DTB_FILES}"
+    printf '"files":"%s"' "$(json_str "${DTB_FILES}")"
     printf '},'
     printf '"disk":{'
     printf '"size_bytes":%d,' "${DISK_SIZE_BYTES}"
-    printf '"size_gb":"%.1f",' "$(echo "scale=1; ${DISK_SIZE_BYTES} / 1073741824" | bc 2>/dev/null || echo 0)"
-    printf '"read_speed_mbps":"%s",' "${DISK_READ_SPEED}"
-    printf '"model":"%s"' "${DISK_MODEL}"
+    printf '"size_gb":"%s",' "${size_gb}"
+    printf '"read_speed_mbps":"%s",' "$(json_str "${DISK_READ_SPEED}")"
+    printf '"model":"%s"' "$(json_str "${DISK_MODEL}")"
     printf '},'
     printf '"partitions":{'
     printf '"count":%d,' "${PARTITION_COUNT}"
-    printf '"types":"%s"' "${PARTITION_TYPES}"
-    printf '}'
-    printf '}'
+    printf '"types":"%s"' "$(json_str "${PARTITION_TYPES}")"
+    printf '}}'
+    printf '\n'
 }
 
 # === Main execution ===
