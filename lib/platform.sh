@@ -185,8 +185,7 @@ plat_diskinfo() {
             ;;
         linux)
             # On Linux, use blockdev to get size in bytes
-            size=$(blockdev --getsize64 "${device}" 2>/dev/null)
-            if [[ $? -ne 0 ]]; then
+            if ! size=$(blockdev --getsize64 "${device}" 2>/dev/null); then
                 echo "ERROR: Could not determine disk size for ${device}" >&2
                 return 1
             fi
@@ -202,10 +201,6 @@ plat_diskinfo() {
 # Returns: speed in MB/s on stdout
 plat_readspeed() {
     local device="$1"
-    local read_size=$((10 * 1024 * 1024))  # 10MB
-    local start_time
-    local end_time
-    local elapsed
     local speed
 
     if [[ -z "${device}" ]]; then

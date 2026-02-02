@@ -66,19 +66,19 @@ prompt_device_info() {
     echo ""
 
     # Device name
-    read -p "Device name (e.g., 'R36S', 'GA36', 'PSP 1000'): " DEVICE_NAME
+    read -rp "Device name (e.g., 'R36S', 'GA36', 'PSP 1000'): " DEVICE_NAME
     if [[ -z "$DEVICE_NAME" ]]; then
         DEVICE_NAME="unknown"
     fi
 
     # Purchase source
-    read -p "Where was it purchased? (e.g., 'AliExpress', 'Amazon', 'eBay'): " PURCHASE_SOURCE
+    read -rp "Where was it purchased? (e.g., 'AliExpress', 'Amazon', 'eBay'): " PURCHASE_SOURCE
     if [[ -z "$PURCHASE_SOURCE" ]]; then
         PURCHASE_SOURCE="unknown"
     fi
 
     # Additional notes
-    read -p "Any additional notes (optional, press Enter to skip): " DEVICE_NOTES
+    read -rp "Any additional notes (optional, press Enter to skip): " DEVICE_NOTES
     if [[ -z "$DEVICE_NOTES" ]]; then
         DEVICE_NOTES=""
     fi

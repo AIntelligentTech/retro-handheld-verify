@@ -30,9 +30,9 @@ detect_dtb() {
 
   # Find mounted partitions for this device
   if [[ "${PLATFORM}" == "macos" ]]; then
-    mounted_partitions=( $(mount | grep "^${device}" | awk '{print $3}') )
+    mapfile -t mounted_partitions < <(mount | grep "^${device}" | awk '{print $3}')
   elif [[ "${PLATFORM}" == "linux" ]]; then
-    mounted_partitions=( $(lsblk -no MOUNTPOINT "${device}" 2>/dev/null | grep -v "^$") )
+    mapfile -t mounted_partitions < <(lsblk -no MOUNTPOINT "${device}" 2>/dev/null | grep -v "^$")
   fi
 
   # If no mounted partitions, try searching raw boot area for DTB magic bytes

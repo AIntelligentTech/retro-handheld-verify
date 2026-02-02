@@ -113,7 +113,7 @@ detect_strings_from_file() {
     local unique_strings=()
     local seen=()
     for str in "${matched_strings[@]}"; do
-        if [[ ! " ${seen[@]} " =~ " ${str} " ]]; then
+        if [[ ! " ${seen[*]} " == *" ${str} "* ]]; then
             unique_strings+=("${str}")
             seen+=("${str}")
         fi
@@ -147,9 +147,7 @@ detect_strings() {
 
     # Extract strings from first 32MB using dd and strings
     local strings_output
-    strings_output=$(dd if="${device}" bs=1M count=32 2>/dev/null | strings)
-
-    if [[ $? -ne 0 ]]; then
+    if ! strings_output=$(dd if="${device}" bs=1M count=32 2>/dev/null | strings); then
         echo "ERROR: Failed to read strings from ${device}" >&2
         return 1
     fi
