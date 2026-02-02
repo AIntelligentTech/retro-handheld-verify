@@ -121,7 +121,7 @@ output_human() {
     printf '%s\n' "─── Disk ─────────────────────────────────────────────"
     if [[ ${DISK_SIZE_BYTES} -gt 0 ]]; then
         local size_gb
-        size_gb=$(echo "scale=1; ${DISK_SIZE_BYTES} / 1073741824" | bc 2>/dev/null || printf "%.1f" "$(echo "${DISK_SIZE_BYTES} / 1073741824" | awk '{printf "%.1f", $0}')")
+        size_gb=$(echo "scale=1; ${DISK_SIZE_BYTES} / 1073741824" | bc 2>/dev/null || echo "0")
         printf '%s\n' "  Size:       ${size_gb} GB"
     else
         printf '%s\n' "  Size:       unknown"

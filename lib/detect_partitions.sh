@@ -2,6 +2,8 @@
 # Detects partition types from MBR
 # Sources: lib/platform.sh for platform detection utilities
 
+set -o pipefail
+
 source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
 
 # Global variables set by detection functions

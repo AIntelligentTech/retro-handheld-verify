@@ -2,6 +2,8 @@
 # Detects and hashes Device Tree Blob (DTB) files on mounted partitions
 # Sources: lib/platform.sh for platform detection utilities
 
+set -o pipefail
+
 SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
 source "${SCRIPT_DIR}/platform.sh"
 

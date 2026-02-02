@@ -2,6 +2,8 @@
 # Detects disk metadata and measures read speed
 # Sources: lib/platform.sh for platform detection utilities
 
+set -o pipefail
+
 SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
 source "${SCRIPT_DIR}/platform.sh"
 
